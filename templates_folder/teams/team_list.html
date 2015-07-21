@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Equipos{% endblock %}
+{% block additional_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/custom-styles.css"/>
+{% endblock %}
+{% block content %}
+    <section class="content">
+        <div class="box">
+            <div class="box-header with-border">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3 class="box-title">Equipos</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="box-body">
+                {% if teams %}
+                    <table class="table table-striped">
+                        <tbody>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripci&oacute;n</th>
+                        </tr>
+                        {% for team in teams %}
+                            <tr>
+                                <td>
+                                    {% if team.logo %}
+                                        <img src="{{ MEDIA_URL }}{{ team.logo }}" alt="" class="team_mini_image"/>
+                                    {% else %}
+                                        <img src="{{ STATIC_URL }}images/no-image.png" alt="" class="team_mini_image"/>
+                                    {% endif %}
+                                    <a href="{% url "team_detail" pk=team.pk %}">
+                                        {{ team.name }}
+                                    </a>
+                                </td>
+                                <td>{{ team.description }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="callout callout-warning">
+                        <h4>Woops! <i class="fa fa-meh-o"></i></h4>
+
+                        <p>Al parecer no hay torneos registrados.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% include "generic/modals/confirm.html" %}
+    </section>
+{% endblock %}
+{% block additional_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/modals.js"></script>
+    <script type="text/javascript">
+        $(document).on("ready", function () {
+
+        });
+    </script>
+{% endblock %}

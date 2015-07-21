@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Registrar{% endblock %}
+{% block additional_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/custom-styles.css"/>
+{% endblock %}
+{% block content %}
+    <section class="content">
+        {% load custom_tagsnfilters %}
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Registrar</h3>
+            </div>
+            <div class="box-body">
+                <div class="row" hidden="hidden" id="error-alert">
+                    <div class="col-sm-12">
+                        <div class="alert alert-danger alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                            Revise los campos obligatorios!
+                        </div>
+                    </div>
+                </div>
+                <form action="." method="post" id="form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">
+                                {{ field.label }}
+                            </label>
+
+                            <div class="col-sm-9">
+                                {% if field.field.required %}
+                                    {{ field|add_class:'form-control input-sm required m-bot15' }}
+                                {% else %}
+                                    {{ field|add_class:'form-control input-sm m-bot15' }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="row text-center">
+                        <button type="submit" class="btn btn-danger btn-sm" id="btnRegister">
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    {% include "generic/modals/error.html" %}
+{% endblock %}
+{% block additional_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/validateForm.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/modals.js"></script>
+    <script type="text/javascript">
+        $(document).on("ready", function () {
+            $("#form").submit(function () {
+                var $btnRegister = $("#btnRegister");
+                $btnRegister.button("loading");
+                if (!validateForm($(this))) {
+                    $("#error-alert").show();
+                    $btnRegister.button("reset");
+                    return false;
+                }
+            });
+        });
+
+        function validateForm(form) {
+            var valid = false;
+            form.find("input.required, select.required").each(function () {
+                if ($(this).val() == "" || $(this).val() == 0) {
+                    valid = false;
+                    $(this).parent().parent().addClass("label-form-error");
+                    $(this).addClass("form-error");
+                } else {
+                    $(this).removeClass("form-error");
+                    valid = true;
+                }
+            });
+            return valid;
+        }
+
+    </script>
+{% endblock %}
